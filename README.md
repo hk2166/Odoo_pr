@@ -1,13 +1,17 @@
 # SkillSwap - Skill Exchange Platform
+-------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------
+
 Team-Details
-Namr-Hemant Yadav
-Email-9610hemant@gmail.com
+-------------------------------------------------------------------------------------------------
+Name-Hemant Yadav
+Email=9610hemant@gmail.com
 -------------------------------------------------------------------------------------------------
 Name-Manmath Mohanty
-Email-manmath.mohanty@adypu.edu.in
+Email=manmath.mohanty@adypu.edu.in
 -------------------------------------------------------------------------------------------------
 Name-Suvendu Kumar Sahoo
-Email-suvendu.sahoo@adypu.edu.in
+Email=suvendu.sahoo@adypu.edu.in
 
 [![React](https://img.shields.io/badge/React-18.0.0-blue.svg)](https://reactjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0.0-blue.svg)](https://www.typescriptlang.org/)
