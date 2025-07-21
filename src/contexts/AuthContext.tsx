@@ -214,9 +214,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       // Only attempt to sign out if there's an active session
       if (session) {
+      }
       // If there's a connection error, still set loading to false
       if (error instanceof Error && error.message.includes('fetch')) {
         console.warn('Unable to connect to Supabase - running in offline mode');
+      }
       console.error('Error signing out:', error);
     } finally {
       // Always clear local state even if server logout fails
