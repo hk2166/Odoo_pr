@@ -138,7 +138,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         // Provide user-friendly error messages
         let userFriendlyError = error.message;
         
-        if (error.message.includes('User already registered')) {
+        if (error.message.includes('User already registered') || error.message.includes('already registered')) {
           userFriendlyError = 'An account with this email already exists. Please sign in instead.';
         } else if (error.message.includes('Password should be at least')) {
           userFriendlyError = 'Password must be at least 6 characters long.';
@@ -146,6 +146,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           userFriendlyError = 'Please enter a valid email address.';
         } else if (error.message.includes('Email rate limit exceeded')) {
           userFriendlyError = 'Too many signup attempts. Please wait a moment before trying again.';
+        } else if (error.message.includes('Unable to connect') || error.message.includes('fetch')) {
+          userFriendlyError = 'Unable to connect to the server. Please check your internet connection and try again.';
+        } else if (error.message.includes('not configured')) {
+          userFriendlyError = 'Service temporarily unavailable. Please try again later.';
         }
         
         return { error: userFriendlyError };
@@ -161,7 +165,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       return { error: null };
     } catch (error) {
       setLoading(false);
-      return { error: error instanceof Error ? error.message : 'An error occurred during signup' };
+      const errorMessage = error instanceof Error ? error.message : 'An error occurred during signup';
+      if (errorMessage.includes('fetch') || errorMessage.includes('network')) {
+        return { error: 'Unable to connect to the server. Please check your internet connection and try again.' };
+      }
+      return { error: errorMessage };
     }
   };
 
@@ -182,6 +190,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           userFriendlyError = 'No account found with this email address. Please sign up first.';
         } else if (error.message.includes('Too many requests')) {
           userFriendlyError = 'Too many login attempts. Please wait a moment before trying again.';
+        } else if (error.message.includes('Unable to connect') || error.message.includes('fetch')) {
+          userFriendlyError = 'Unable to connect to the server. Please check your internet connection and try again.';
+        } else if (error.message.includes('not configured')) {
+          userFriendlyError = 'Service temporarily unavailable. Please try again later.';
         }
         
         return { error: userFriendlyError };
@@ -189,7 +201,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       return { error: null };
     } catch (error) {
       setLoading(false);
-      return { error: error instanceof Error ? error.message : 'An error occurred during signin' };
+      const errorMessage = error instanceof Error ? error.message : 'An error occurred during signin';
+      if (errorMessage.includes('fetch') || errorMessage.includes('network')) {
+        return { error: 'Unable to connect to the server. Please check your internet connection and try again.' };
+      }
+      return { error: errorMessage };
     }
   };
 
@@ -198,9 +214,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       // Only attempt to sign out if there's an active session
       if (session) {
-        await supabase.auth.signOut();
-      }
-    } catch (error) {
+      // If there's a connection error, still set loading to false
+      if (error instanceof Error && error.message.includes('fetch')) {
+        console.warn('Unable to connect to Supabase - running in offline mode');
       console.error('Error signing out:', error);
     } finally {
       // Always clear local state even if server logout fails
